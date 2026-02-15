@@ -2,7 +2,7 @@ import asyncio
 import threading
 
 from chat_bot import llm_chat
-from tts_engine import create_tts_engine, tts_speak
+from tts_engine import tts_speak
 from window_manager import pet_window_gui, pet_window_end, pet_start_bounce, pet_stop_bounce
 
 from utility_scripts.system_logging import setup_logger
