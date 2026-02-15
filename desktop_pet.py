@@ -2,7 +2,7 @@ import asyncio
 import threading
 
 from chat_bot import llm_chat
-from tts_engine import tts_speak
+from tts_engine import tts_speak, tts_generate
 import window_manager as pet
 
 from utility_scripts.system_logging import setup_logger
@@ -14,10 +14,10 @@ logger = setup_logger(__name__)
 async def tts_and_animation(user_input, response):
     pet.change_image('thinking')
     tts_speak(user_input, 0)
+
+    speech_file = tts_generate(response, 1)
     pet.change_image('idle')
-    pet.start_bounce()
-    tts_speak(response, 1)
-    pet.stop_bounce()
+    pet.speak_and_bounce(speech_file)
 
 
 def input_loop():

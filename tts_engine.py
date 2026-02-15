@@ -1,4 +1,7 @@
+import time
+
 import pyttsx3
+from pathlib import Path
 
 
 def create_tts_engine(voice_index=0, rate=150, volume=0.9):
@@ -21,3 +24,22 @@ def tts_speak(text, voice_index=0):
     engine.say(text)
     engine.runAndWait()
     engine.stop()
+
+
+def tts_generate(text, voice_index=0):
+    file_name = f"speech_{int(time.time()*1000)}.wav"
+    file_path = Path(__file__).parent / file_name
+    # Speak text
+    engine = create_tts_engine(voice_index)
+    engine.save_to_file(text, file_name)
+    engine.runAndWait()
+    engine.stop()
+    return file_path
+
+
+if __name__ == "__main__":
+    while True:
+        user_input = input('> ').lower()
+        if user_input == 'exit':
+            break
+        tts_speak(user_input, 0)
