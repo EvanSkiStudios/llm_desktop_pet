@@ -4,20 +4,38 @@ from pathlib import Path
 import tkinter as tk
 from PIL import Image, ImageTk
 
+
 root = tk.Tk()
 root.overrideredirect(True)  # remove window frame
 root.wm_attributes("-topmost", True)
 
 # Set a temporary background color that won't appear in the PNG
-transparent_color = "green"  # some color not in your image
+transparent_color = "white"  # some color not in your image
 root.config(bg=transparent_color)
 root.wm_attributes("-transparentcolor", transparent_color)
 
-# Load transparent PNG
-image_path = Path(__file__).parent / "character_assets" / "mouse3.png"
-pil_image = Image.open(image_path)
-image = ImageTk.PhotoImage(pil_image)
 
+def load_image(filename):
+    path = Path(__file__).parent / "character_assets" / filename
+    pil = Image.open(path)
+    return ImageTk.PhotoImage(pil)
+
+
+# Preload all images once
+images = {
+    "idle": load_image("mouse3.png"),
+    "thinking": load_image("mouse_thinking.png"),
+}
+
+
+def change_image(name):
+    new_image = images[name]
+    label.config(image=new_image)
+    label.image = new_image
+    root.geometry(f"{new_image.width()}x{new_image.height()}+{x}+{y}")
+
+
+image = images["idle"]
 label = tk.Label(root, image=image, bg=transparent_color, borderwidth=0)
 label.pack()
 
@@ -48,14 +66,14 @@ def bounce():
     root.after(10, bounce)
 
 
-def pet_start_bounce():
+def start_bounce():
     global bouncing
     if not bouncing:
         bouncing = True
         bounce()
 
 
-def pet_stop_bounce():
+def stop_bounce():
     global bouncing
     bouncing = False
 
@@ -69,21 +87,21 @@ def input_loop():
         user_input = input("> ").lower()
 
         if user_input == "bounce":
-            root.after(0, pet_start_bounce)
+            root.after(0, start_bounce)
 
         elif user_input == "stop":
-            root.after(0, pet_stop_bounce)
+            root.after(0, stop_bounce)
 
         elif user_input == "exit":
             root.after(0, desktop_pet_end)
             break
 
 
-def pet_window_gui():
+def window_gui():
     root.mainloop()
 
 
-def pet_window_end():
+def window_end():
     root.after(0, desktop_pet_end)
 
 

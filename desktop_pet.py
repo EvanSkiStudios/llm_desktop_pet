@@ -3,7 +3,7 @@ import threading
 
 from chat_bot import llm_chat
 from tts_engine import tts_speak
-from window_manager import pet_window_gui, pet_window_end, pet_start_bounce, pet_stop_bounce
+import window_manager as pet
 
 from utility_scripts.system_logging import setup_logger
 
@@ -11,26 +11,29 @@ from utility_scripts.system_logging import setup_logger
 logger = setup_logger(__name__)
 
 
-async def tts_and_animation(response):
-    pet_start_bounce()
-    tts_speak(response)
-    pet_stop_bounce()
+async def tts_and_animation(user_input, response):
+    pet.change_image('thinking')
+    tts_speak(user_input, 0)
+    pet.change_image('idle')
+    pet.start_bounce()
+    tts_speak(response, 1)
+    pet.stop_bounce()
 
 
 def input_loop():
     while True:
         user_input = input("> ").lower()
         if user_input == "exit":
-            pet_window_end()
+            pet.window_end()
             break
 
         response = asyncio.run(llm_chat(user_input))
         logger.info(response)
-        asyncio.run(tts_and_animation(response))
+        asyncio.run(tts_and_animation(user_input, response))
 
 
 if __name__ == "__main__":
     threading.Thread(target=input_loop, daemon=True).start()
-    pet_window_gui()
+    pet.window_gui()
 
 
