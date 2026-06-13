@@ -1,4 +1,5 @@
 import math
+import os
 import threading
 import tkinter as tk
 import ctypes
@@ -8,6 +9,9 @@ import pygame
 from engines.speech_analyzer import extract_amplitude
 from window_manager.pet_images import load_pet_image
 
+pygame.init()
+MUSIC_END = pygame.USEREVENT + 1
+pygame.mixer.music.set_endevent(MUSIC_END)
 
 # =========================================================
 # IMAGE LOADING
@@ -46,6 +50,8 @@ class DesktopPet:
 
         self.speech_amplitude = []
         self.seconds_per_step = 0
+
+        self.is_speaking = False
 
         # ---------------- PYGAME ----------------
         pygame.mixer.init()
@@ -162,13 +168,36 @@ class DesktopPet:
     # AUDIO
     # =========================================================
     def play_speech(self, file):
+        self.is_speaking = True
+
         pygame.mixer.music.load(file)
         pygame.mixer.music.play()
 
+        def wait_and_cleanup():
+            if pygame.mixer.music.get_busy():
+                self.root.after(50, wait_and_cleanup)
+                return
+
+            pygame.mixer.music.stop()
+
+            try:
+                pygame.mixer.music.unload()
+            except Exception:
+                pass
+
+            try:
+                os.remove(file)
+            except Exception:
+                pass
+
+            self.is_speaking = False
+
+        wait_and_cleanup()
+
     def speak_and_bounce(self, file):
         self.speech_amplitude, self.seconds_per_step = extract_amplitude(file)
-        self.play_speech(file)
         self.bouncing = True
+        self.play_speech(file)
 
     # =========================================================
     # BOUNCE LOGIC
