@@ -1,27 +1,24 @@
 import asyncio
-import os
 import threading
 
 import time
 
-import random
-
-from chat_bot import llm_chat
+from engines.chat_bot import llm_chat
 from screen_grabber import print_screen
-from tts_engine import tts_speak, tts_generate
-import window_manager as pet
+from engines.tts_engine import tts_speak, tts_generate
+from window_manager import  pet_window_manager
 
 from utility_scripts.system_logging import setup_logger
+from window_manager.pet_window_manager import DesktopPet
 
 # --- Logger ---
 logger = setup_logger(__name__)
 
+pet = DesktopPet()
+
 
 async def tts_and_animation(user_input, response):
-    pet.change_image('thinking')
-    tts_speak(user_input, 0)
     speech_file = tts_generate(response, 1)
-    pet.change_image('idle')
     pet.speak_and_bounce(speech_file)
 
 
@@ -29,9 +26,9 @@ async def input_loop():
     while True:
         time.sleep(10)
 
-        pet.toggle_window()
+        pet.hide()
         screenshot_path = print_screen()
-        pet.toggle_window()
+        pet.show()
 
         user_input = "Comment on what you see, like you are watching someone play a game, dont over analyse."
         response = await llm_chat(user_input, screenshot_path)
@@ -47,7 +44,8 @@ def start_input_loop():
 
 
 if __name__ == "__main__":
+    pet.change_image('chibi_miku')
     threading.Thread(target=start_input_loop, daemon=True).start()
-    pet.window_gui()
+    pet.run()
 
 

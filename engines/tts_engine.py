@@ -3,6 +3,9 @@ import time
 import pyttsx3
 from pathlib import Path
 
+gen_files_dir = Path(__file__).parent.parent / 'generated_files'
+gen_files_dir.mkdir(parents=True, exist_ok=True)
+
 
 def create_tts_engine(voice_index=0, rate=150, volume=0.9):
     # Initialize the engine
@@ -28,10 +31,10 @@ def tts_speak(text, voice_index=0):
 
 def tts_generate(text, voice_index=0):
     file_name = f"speech_{int(time.time()*1000)}.wav"
-    file_path = Path(__file__).parent / file_name
+    file_path = gen_files_dir / file_name
     # Speak text
     engine = create_tts_engine(voice_index)
-    engine.save_to_file(text, file_name)
+    engine.save_to_file(text, str(file_path))
     engine.runAndWait()
     engine.stop()
     return file_path

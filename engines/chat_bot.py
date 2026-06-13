@@ -50,7 +50,8 @@ async def llm_chat(user_prompt, photo=None):
     ]
 
     # DANGER
-    os.remove(photo)
+    if photo is not None:
+        os.remove(photo)
 
     return response.message.content
 
