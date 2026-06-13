@@ -13,26 +13,33 @@ load_dotenv()
 os.environ["OLLAMA_API_KEY"] = os.getenv("OLLAMA_API")
 
 # --- LLM model ---
-llm_model = 'huihui_ai/deepseek-r1-abliterated'
+llm_model = 'gemma4:31b-cloud'
 messages = []
 
 
 # --- Main async chat function ---
-async def llm_chat(user_prompt):
+async def llm_chat(user_prompt, photo=None):
     global messages
+
+    print('Thinking...')
+
+    if photo is not None:
+        user_response = {'role': 'user', 'content': user_prompt, 'images': [photo]}
+    else:
+        user_response = {'role': 'user', 'content': user_prompt}
 
     response = await asyncio.to_thread(
         chat,
         model=llm_model,
         messages=[
-            {'role': 'system', 'content': 'You are a Rat that has infinite wisdom. Keep your responses short and concise.'},
+            # {'role': 'system', 'content': 'You are a Rat that has infinite wisdom. Keep your responses short and concise.'},
             *messages,
-            {'role': 'user', 'content': user_prompt}
+            user_response
         ],
         options={
             'num_ctx': 16384,
-            'temperature': 0.5,
-            'think': False
+            'temperature': 0.6,
+            'think': True
         },
         stream=False
     )
@@ -41,6 +48,9 @@ async def llm_chat(user_prompt):
         {'role': 'user', 'content': user_prompt},
         {'role': 'assistant', 'content': response.message.content},
     ]
+
+    # DANGER
+    os.remove(photo)
 
     return response.message.content
 

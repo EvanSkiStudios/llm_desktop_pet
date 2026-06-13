@@ -1,6 +1,8 @@
 import asyncio
 import threading
 
+import random
+
 from chat_bot import llm_chat
 from tts_engine import tts_speak, tts_generate
 import window_manager as pet
@@ -14,7 +16,6 @@ logger = setup_logger(__name__)
 async def tts_and_animation(user_input, response):
     pet.change_image('thinking')
     tts_speak(user_input, 0)
-
     speech_file = tts_generate(response, 1)
     pet.change_image('idle')
     pet.speak_and_bounce(speech_file)
@@ -23,7 +24,7 @@ async def tts_and_animation(user_input, response):
 def input_loop():
     while True:
         user_input = input("> ").lower()
-        if user_input == "exit":
+        if user_input == "/exit":
             pet.window_end()
             break
 

@@ -18,6 +18,8 @@ root.config(bg=transparent_color)
 root.wm_attributes("-transparentcolor", transparent_color)
 
 
+
+
 def load_image(filename):
     path = Path(__file__).parent / "character_assets" / filename
     pil = Image.open(path)
@@ -48,6 +50,38 @@ screen_height = root.winfo_screenheight()
 x = screen_width - image.width()
 y = screen_height - image.height()
 root.geometry(f"{image.width()}x{image.height()}+{x}+{y}")
+
+
+window_hidden = False
+
+
+def hide_window():
+    global window_hidden
+    if not window_hidden:
+        window_hidden = True
+        root.withdraw()
+
+
+def show_window():
+    global window_hidden, image
+    if window_hidden:
+        window_hidden = False
+        root.deiconify()
+
+        # Re-apply attributes because some systems may reset them
+        root.overrideredirect(True)
+        root.wm_attributes("-topmost", True)
+        root.wm_attributes("-transparentcolor", transparent_color)
+
+        # Restore original position
+        root.geometry(f"{image.width()}x{image.height()}+{x}+{y}")
+
+
+def toggle_window():
+    if window_hidden:
+        show_window()
+    else:
+        hide_window()
 
 
 # Bounce variables
