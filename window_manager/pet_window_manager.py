@@ -1,6 +1,7 @@
 import math
 import threading
 import tkinter as tk
+import ctypes
 
 import pygame
 
@@ -123,6 +124,41 @@ class DesktopPet:
             self.hide()
 
     # =========================================================
+    # PREVENT MOUSE BLOCKING
+    # =========================================================
+
+    def set_clickthrough(self, enabled: bool):
+        hwnd = self.root.winfo_id()
+
+        ex_style = ctypes.windll.user32.GetWindowLongW(hwnd, -20)
+
+        if enabled:
+            ctypes.windll.user32.SetWindowLongW(
+                hwnd,
+                -20,
+                ex_style | 0x20  # WS_EX_TRANSPARENT
+            )
+        else:
+            ctypes.windll.user32.SetWindowLongW(
+                hwnd,
+                -20,
+                ex_style & ~0x20
+            )
+
+    def is_mouse_over(self):
+        mx = self.root.winfo_pointerx()
+        my = self.root.winfo_pointery()
+
+        x1 = self.window_x
+        y1 = self.window_y
+
+        img = self.label.image
+        x2 = x1 + img.width()
+        y2 = y1 + img.height()
+
+        return x1 <= mx <= x2 and y1 <= my <= y2
+
+    # =========================================================
     # AUDIO
     # =========================================================
     def play_speech(self, file):
@@ -174,6 +210,13 @@ class DesktopPet:
     # MAIN UPDATE LOOP
     # =========================================================
     def update(self):
+        if self.is_mouse_over():
+            self.set_clickthrough(True)
+            self.hide()
+        else:
+            self.set_clickthrough(False)
+            self.show()
+
         self.update_bounce()
         self.root.after(16, self.update)
 
