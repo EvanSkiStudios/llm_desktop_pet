@@ -4,14 +4,23 @@ import threading
 import tkinter as tk
 import ctypes
 
+import warnings
+
+# supress pygame warning
+warnings.filterwarnings(
+    "ignore",
+    message="pkg_resources is deprecated as an API.*"
+)
+
 import pygame
 
-from engines.speech_analyzer import extract_amplitude
+from window_manager.speech_analyzer import extract_amplitude
 from window_manager.pet_images import load_pet_image
 
 pygame.init()
 MUSIC_END = pygame.USEREVENT + 1
 pygame.mixer.music.set_endevent(MUSIC_END)
+
 
 # =========================================================
 # IMAGE LOADING
@@ -20,7 +29,8 @@ def load_images():
     return {
         "idle": load_pet_image("mouse3.png"),
         "thinking": load_pet_image("mouse_thinking.png"),
-        "chibi_miku": load_pet_image("chibi_miku.png")
+        "chibi_miku": load_pet_image("chibi_miku.png"),
+        "isabel": load_pet_image('isabel.png')
     }
 
 
@@ -172,7 +182,7 @@ class DesktopPet:
 
         pygame.mixer.music.load(file)
 
-        pygame.mixer.music.set_volume(0.5)  # 50% volume (0.0 to 1.0)
+        # pygame.mixer.music.set_volume(0.5)  # 50% volume (0.0 to 1.0)
 
         pygame.mixer.music.play()
 

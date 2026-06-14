@@ -1,4 +1,6 @@
 import asyncio
+import os
+
 import keyboard
 
 from voice_capture.audio_recorder import AudioRecorder
@@ -35,6 +37,10 @@ async def record_voice():
     path = await record_until_f8_release()
 
     text = whisper_transcribe(path)
+
+    # DANGER
+    os.remove(path)
+
     print(text)
     return text
 

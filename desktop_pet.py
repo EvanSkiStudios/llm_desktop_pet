@@ -1,8 +1,8 @@
 import asyncio
 import threading
 
-from engines.chat_bot import llm_chat
-from engines.tts_engine import tts_speak, tts_generate
+from ollama_llm.llm_module import llm_chat
+from text_to_speech.tts_engine import tts_speak, tts_generate
 
 from utility_scripts.system_logging import setup_logger
 from window_manager.pet_window_manager import DesktopPet
