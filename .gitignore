@@ -24,3 +24,4 @@ __pycache__/
 # Documentation / wiki
 # ----------------------
 /generated_files
+/vo_recordings

@@ -28,7 +28,7 @@ async def screenshot_loop():
     global latest_screenshot
 
     while True:
-        await asyncio.sleep(10)
+        await asyncio.sleep(20)
 
         pet.hide()
         path = await asyncio.to_thread(print_screen)
@@ -42,6 +42,15 @@ async def input_loop():
     global latest_screenshot, last_used
 
     while True:
+        await asyncio.sleep(15)
+
+        pet.hide()
+        path = await asyncio.to_thread(print_screen)
+        pet.show()
+
+        async with lock:
+            latest_screenshot = path
+
         # grab whatever screenshot is currently available
         async with lock:
             screenshot_path = latest_screenshot
@@ -75,7 +84,7 @@ async def input_loop():
 
 async def main():
     await asyncio.gather(
-        screenshot_loop(),
+        # screenshot_loop(),
         input_loop(),
     )
 

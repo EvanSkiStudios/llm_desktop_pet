@@ -13,7 +13,8 @@ load_dotenv()
 os.environ["OLLAMA_API_KEY"] = os.getenv("OLLAMA_API")
 
 # --- LLM model ---
-llm_model = 'gemma4:31b-cloud'
+# llm_model = 'gemma4:31b-cloud'
+llm_model = 'ISABEL:latest'
 messages = []
 
 
