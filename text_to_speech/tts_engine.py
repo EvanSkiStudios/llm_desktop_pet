@@ -7,7 +7,7 @@ gen_files_dir = Path(__file__).parent.parent / 'generated_files'
 gen_files_dir.mkdir(parents=True, exist_ok=True)
 
 
-def create_tts_engine(voice_index=0, rate=150, volume=0.9):
+def create_tts_engine(voice_index=0, rate=175, volume=0.9):
     # Initialize the engine
     engine = pyttsx3.init()
 

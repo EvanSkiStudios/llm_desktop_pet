@@ -26,3 +26,5 @@ __pycache__/
 /generated_files
 /vo_recordings
 /character_assets
+/text_to_speech/piper/voices
+/text_to_speech/piper/tts_output

@@ -19,28 +19,36 @@ messages = []
 
 
 # --- Main async chat function ---
-async def llm_chat(user_prompt, photo=None):
+async def llm_chat(user_prompt, photos=None, system_prompt=None):
     global messages
 
     print('Thinking...')
 
-    if photo is not None:
-        user_response = {'role': 'user', 'content': user_prompt, 'images': [photo]}
+    if photos is not None:
+        user_response = {'role': 'user', 'content': user_prompt, 'images': photos}
     else:
         user_response = {'role': 'user', 'content': user_prompt}
+
+    if system_prompt is not None:
+        system_messages = [
+            {'role': 'system', 'content': system_prompt},
+            *messages,
+            user_response
+        ]
+    else:
+        system_messages = [
+            *messages,
+            user_response
+        ]
 
     response = await asyncio.to_thread(
         chat,
         model=llm_model,
-        messages=[
-            # {'role': 'system', 'content': 'You are a Rat that has infinite wisdom. Keep your responses short and concise.'},
-            *messages,
-            user_response
-        ],
+        messages=system_messages,
         options={
             'num_ctx': 16384,
             'temperature': 0.6,
-            'think': True
+            'think': False
         },
         stream=False
     )
@@ -51,8 +59,9 @@ async def llm_chat(user_prompt, photo=None):
     ]
 
     # DANGER
-    if photo is not None:
-        os.remove(photo)
+    if photos is not None:
+        for image in photos:
+            os.remove(image)
 
     return response.message.content
 

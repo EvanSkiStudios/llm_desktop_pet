@@ -35,7 +35,7 @@ async def record_voice():
     await keyboard_wait_for_f8_press()
     print("Starting recording...")
     path = await record_until_f8_release()
-
+    print("Done recording")
     text = whisper_transcribe(path)
 
     # DANGER

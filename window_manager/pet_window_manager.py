@@ -182,7 +182,7 @@ class DesktopPet:
 
         pygame.mixer.music.load(file)
 
-        # pygame.mixer.music.set_volume(0.5)  # 50% volume (0.0 to 1.0)
+        pygame.mixer.music.set_volume(0.5)  # 50% volume (0.0 to 1.0)
 
         pygame.mixer.music.play()
 
